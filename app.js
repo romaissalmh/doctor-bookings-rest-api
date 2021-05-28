@@ -10,7 +10,7 @@ const app = express();
 // Cross Origin Resources Sharing, Initially all whitelisted
 app.use(cors());
 
-
+/*
 
 var connection = mysql.createPool({
     host     : process.env.HOST,
@@ -45,7 +45,7 @@ app.get('/getDoctor/:lastName',function(req,res,next){
     });
 
 
-
+*/
 
 
 
