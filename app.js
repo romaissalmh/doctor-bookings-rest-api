@@ -1,25 +1,36 @@
-var express = require('express');
-var dotenv = require('dotenv');
-var cors = require('cors');
-const { env } = require('process');
+var express = require('express')
+var dotenv = require('dotenv')
+var cors = require('cors')
+var mysql = require('mysql')
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
+const app = express()
 
 // Cross Origin Resources Sharing, Initially all whitelisted
-app.use(cors());
+app.use(cors())
 
-/*
 
-var connection = mysql.createPool({
-    host     : process.env.HOST,
-     user    : process.env.USER,
-    password : process.env.PASSWORD,
-    database : process.env.DATABASE
-  
-  });
-  
+
+
+// Connect to DB
+
+const connection = mysql.createConnection(({
+  host     : "localhost",
+  user     : "root",
+  password : "root",
+  database : "doctors"
+}));
+
+connection.connect(function (err) {
+  if (err) {
+    console.error("error connecting: " + err.stack);
+    return;
+  }
+  console.log("connected as id " + connection.threadId);
+});
+
+
   
 app.get('/getDoctors',function(req,res,next){  
       var query = "select * from doctors"
@@ -34,7 +45,7 @@ app.get('/getDoctors',function(req,res,next){
 app.get('/getDoctor/:lastName',function(req,res,next){ 
       var data = Object() 
       var query = "select * from doctors where lastName=?"
-      connection.query(query,[req.params.name],function(error,results){
+      connection.query(query,[req.params.lastName],function(error,results){
         if (error) { next(error) } else {
           if(results.length>0) {
             data = results[0]
@@ -45,9 +56,8 @@ app.get('/getDoctor/:lastName',function(req,res,next){
     });
 
 
-*/
 
-
+//Lien vers la branche déployée : https://app-doctor-bookings.herokuapp.com/
 
 
 //Home
