@@ -1,6 +1,7 @@
 var express = require('express');
 var dotenv = require('dotenv');
 var cors = require('cors');
+const { env } = require('process');
 
 dotenv.config();
 
@@ -12,10 +13,10 @@ app.use(cors());
 
 
 var connection = mysql.createPool({
-    host     : 'localhost',
-     user    : 'root',
-    password : 'root',
-    database : 'Doctors'
+    host     : process.env.HOST,
+     user    : process.env.USER,
+    password : process.env.PASSWORD,
+    database : process.env.DATABASE
   
   });
   
