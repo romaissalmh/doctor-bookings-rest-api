@@ -83,7 +83,27 @@ var Doctor = require('../models/doctor');
       }  
     };
 
+    // get doctors according to a specific speciality
+    const getDoctorsBySpeciality = async (req,res,next) =>{
+      try
+      {
+        let doctors = await Doctor.find({
+          speciality : req.body.speciality
+        }) ; 
+        if (doctors != null && doctors.length != 0) {
+          res.status(200).json(doctors);
 
+        }
+        else {
+          res.status(404).json({ message: "There is no doctor found with speciality:"+ req.body.speciality });
+          return ;
+        }
+      }
+      catch(e)
+      {
+        res.status(500).json({ error: e.message  });
+      }  
+    };
     // remove a doctor from the db
     const deleteDoctor = async (req,res,next) =>{
      
@@ -111,4 +131,5 @@ var Doctor = require('../models/doctor');
       getDoctor,
       getAllDoctors,
       deleteDoctor,
+      getDoctorsBySpeciality,
     }
