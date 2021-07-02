@@ -31,7 +31,7 @@ app.use(express.static('public/images'));
 
 //Lien vers la branche déployée : https://app-doctor-bookings.herokuapp.com/
 
-app.use('/api/doctor',doctorRoutes);
+app.use('/api/doctors',doctorRoutes);
 
 //Home
 app.use((req, res) => {
