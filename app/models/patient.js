@@ -14,9 +14,25 @@ const patientSchema = mongoose.Schema({
   email: { type: String, required: true },
   weight: { type: Number, required: true },
   height: { type: Number, required: true },
-  bloodType: { type: String, required: true },
+  bloodType: { type: String, required: true,    enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] },
   personalDisease: { type: String, required: true },
 });
 
 module.exports = mongoose.model('Patient', patientSchema);
 
+/*
+   workSchedule: {
+      openingTime: String,
+      closingTime: String,
+      lunchBreakStart: String,
+      lunchBreakEnd: String,
+      unavailableDateTimes: [
+        {
+          startDateTime: String,
+          endDateTime: String,
+          modifier: String,
+        },
+      ],
+    },
+
+*/

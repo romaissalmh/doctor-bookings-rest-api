@@ -1,10 +1,23 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 
 const bookingSchema = mongoose.Schema({
   
-  bookingDate: { type: Date, required: true },
-  bookingTime: { type: Date, required: true },
+  bookingDate: { type: String, required: true },
+  bookingTime: { type: String, required: true },
+  createDate: {
+    type: Date,
+    default: Date.now,
+  },
+  idDoctor: {type: Schema.Types.ObjectId, ref: 'Doctor'},
+  idPatient: {type: Schema.Types.ObjectId, ref: 'Patient'},
+
+
+});
+
+module.exports = mongoose.model('Booking', bookingSchema);
+
 
   //bookingDateEndTime: { type: Date, required: true },
  /* status: {
@@ -14,15 +27,3 @@ const bookingSchema = mongoose.Schema({
     required: true,
     default: 'pending',
   },*/
-  createDate: {
-    type: Date,
-    default: Date.now,
-  },
-  idDoctor: {type: ObjectId, ref: 'Doctor'},
-  idPatient: {type: ObjectId, ref: 'Patient'},
-
-
-});
-
-module.exports = mongoose.model('Booking', bookingSchema);
-

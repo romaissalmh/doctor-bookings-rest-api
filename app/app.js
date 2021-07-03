@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var doctorRoutes = require('./routes/doctor');
 var adviceRequestsRoutes = require('./routes/adviceRequest');
 var patientRoutes = require('./routes/patient');
+var bookingRoutes = require('./routes/booking');
 
 dotenv.config()
 
@@ -20,7 +21,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw());
 
 //Connexion à la base de données
-console.log(process.env.DEV_DATABASE_URL)
 mongoose.connect(process.env.DEV_DATABASE_URL,
 	{ useNewUrlParser: true,
 	  useUnifiedTopology: true })
@@ -36,6 +36,7 @@ app.use(express.static('public/images'));
 app.use('/api/doctors',doctorRoutes);
 app.use('/api/patients',patientRoutes);
 app.use('/api/adviceRequests',adviceRequestsRoutes);
+app.use('/api/bookings',bookingRoutes);
 
 //Home
 app.use((req, res) => {

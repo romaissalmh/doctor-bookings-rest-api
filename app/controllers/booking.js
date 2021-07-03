@@ -1,5 +1,4 @@
 var Booking = require('../models/booking'); 
-var Doctor = require('../models/doctor'); 
 
     // create a booking in the database giving correct body
     const createBooking = async (req,res,next) =>{
@@ -13,6 +12,7 @@ var Doctor = require('../models/doctor');
    
       const booking = new Booking({
         bookingDate: req.body.bookingDate,
+        bookingTime: req.body.bookingTime,
         idDoctor : req.body.idDoctor,
         idPatient : req.body.idPatient,
       });
@@ -85,7 +85,7 @@ var Doctor = require('../models/doctor');
         }
         try
         {
-          await Doctor.deleteOne({_id: req.params.id});
+          await Booking.deleteOne({_id: req.params.id});
           res.status(200).json({ message: 'Booking Deleted successfully !' });
         }
         catch(e)
@@ -122,33 +122,7 @@ var Doctor = require('../models/doctor');
         }
       }
 
-         // get the list of all hours where a doctor is available in a certain date
-        const getAllAvailableHoursByDoctorByDate = async (req,res,next) =>{
-  
-            const hoursArray = [];
-
-            try
-            {
-                
-            let bookings = await Booking.find({
-                _id : req.body.id,
-                bookingDate : req.body.date
-            }) ; 
-            let doctor = await Doctor.findOne({
-                _id : req.body.id,
-            })
-            
-            bookings.forEach((bookingsEach) => {
-                
-            })
-            res.status(200).json(bookings);
-            }
-            catch(e)
-            {
-            res.status(500).json({ error: e.message  });
-            }  
-        };
-
+      
 
     module.exports =  {
       createBooking,
@@ -156,5 +130,4 @@ var Doctor = require('../models/doctor');
       getAllBookings,
       deleteBooking,
       updateBooking,
-      getAllAvailableHoursByDoctorByDate
     }
