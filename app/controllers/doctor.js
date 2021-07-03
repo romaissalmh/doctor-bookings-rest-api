@@ -56,6 +56,8 @@ const loginDoctor = async(req, res, next) => {
         latitude : req.body.latitude,
         longitude : req.body.longitude,
         facebookPage : req.body.facebookPage,
+        pictureUrl : req.body.pictureUrl,
+
       });
 
       try {
