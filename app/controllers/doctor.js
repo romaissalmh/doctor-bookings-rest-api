@@ -1,6 +1,9 @@
 var Doctor = require('../models/doctor'); 
+var Booking = require('../models/booking'); 
+
 var bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {Scheduler} = require('@ssense/sscheduler');
 
 
 const loginDoctor = async(req, res, next) => {
@@ -57,6 +60,7 @@ const loginDoctor = async(req, res, next) => {
         longitude : req.body.longitude,
         facebookPage : req.body.facebookPage,
         pictureUrl : req.body.pictureUrl,
+        workSchedule: req.body.workSchedule,
 
       });
 
@@ -184,9 +188,64 @@ const loginDoctor = async(req, res, next) => {
           });
         }
       }
+
+
+    // get the list of available hours of a doctor at a certain date
+    const getAvailabilityByDoctor = async (req,res,next) =>{
+      try
+      {
+        let doctor = await Doctor.findOne({
+          _id : req.body.id
+        }) ; 
+        let bookings = await Booking.find({
+          idDoctor : req.body.id,
+          bookingDate : req.body.date
+
+        })
+        const durationOfOneAppointement = 60 / doctor.workSchedule.nbBookingPerHour ; //in minutes
+
+        const allocatedDates = [];
+        bookings.forEach((bookingsEach) => {
+            allocatedDates.push({from: bookingsEach.bookingDate+"T"+bookingsEach.bookingTime, duration: durationOfOneAppointement})
+        })
+        const scheduler = new Scheduler();
+         
+        const availability = scheduler.getAvailability({
+          from: '2021-07-05',
+          to: '2021-07-06',
+          timezone: 'EST',
+          duration: durationOfOneAppointement,
+          interval: durationOfOneAppointement,
+          schedule: {
+            weekdays: {
+              from: doctor.workSchedule.openingTime,
+              to: doctor.workSchedule.closingTime,
+              unavailability: [{ from: doctor.workSchedule.lunchBreakStart, to: doctor.workSchedule.lunchBreakEnd,}]
+            },
+          //  unavailability: [{ from: '2017-02-20T00:00', to: '2017-02-27T00:00' }], //vacation
+            allocated:allocatedDates
+            
+          }
+        })
+        const availableHours = [];
+        availability[req.body.date].forEach((availabilityEach)=>{
+          if(availabilityEach.available == true)
+           availableHours.push(availabilityEach.time);
+        })
+      
+
+        res.status(200).json(availableHours);
+      }
+      catch(e)
+      {
+        res.status(500).json({ error: e.message  });
+      }  
+    };
+
     module.exports =  {
       createDoctor,
       getDoctor,
+      getAvailabilityByDoctor,
       getAllDoctors,
       deleteDoctor,
       getDoctorsBySpeciality,

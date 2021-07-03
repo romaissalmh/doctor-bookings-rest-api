@@ -17,8 +17,17 @@ const doctorSchema = mongoose.Schema({
   longitude: { type: Number, required: true },
   facebookPage: { type: String, required: false },
   pictureUrl: { type: String, required: false },
+  workSchedule: {
+    openingTime: String,
+    closingTime: String,
+    lunchBreakStart: String,
+    lunchBreakEnd: String,
+    nbBookingPerHour:Number,
+  },
 
 });
 
 module.exports = mongoose.model('Doctor', doctorSchema);
+
+
 
