@@ -159,11 +159,37 @@ const loginDoctor = async(req, res, next) => {
      
     };
 
+    // update a doctor 
+    const updateDoctor = async (req,res,next) =>{
+      try {
+          const doctor = await Doctor.findOne({
+              _id: req.params.id
+          });
+          if (doctor) {    // Check if record exists in db
+            let updatedDoctor = await doctor.updateOne(req.body)
+            if (updatedDoctor) {
+              res.status(200).send({
+                data: updatedDoctor,
+                message: 'doctor updated successfully.',
+              });
+            } 
+          } else {
+            res.status(404).send({
+              message: "Cannot find doctor with id"+ req.params.id
+            });
+          }
+        } catch (err) {
+          res.status(500).send({
+            message: err.message || "Some error occured while updating doctor with id: " + req.params.id
+          });
+        }
+      }
     module.exports =  {
       createDoctor,
       getDoctor,
       getAllDoctors,
       deleteDoctor,
       getDoctorsBySpeciality,
-      loginDoctor
+      loginDoctor,
+      updateDoctor
     }
