@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 
 const patientSchema = mongoose.Schema({
   
-  userId: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   userName: { type: String, required: true },
@@ -15,7 +14,7 @@ const patientSchema = mongoose.Schema({
   email: { type: String, required: true },
   weight: { type: Number, required: true },
   height: { type: Number, required: true },
-  bloodType: { type: Number, required: true },
+  bloodType: { type: String, required: true },
   personalDisease: { type: String, required: true },
 });
 
