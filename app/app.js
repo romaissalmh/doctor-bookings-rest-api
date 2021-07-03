@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var doctorRoutes = require('./routes/doctor');
 var adviceRequestsRoutes = require('./routes/adviceRequest');
+var patientRoutes = require('./routes/patient');
 
 dotenv.config()
 
@@ -33,6 +34,7 @@ app.use(express.static('public/images'));
 //Lien vers la branche déployée : https://app-doctor-bookings.herokuapp.com/
 
 app.use('/api/doctors',doctorRoutes);
+app.use('/api/patients',patientRoutes);
 app.use('/api/adviceRequests',adviceRequestsRoutes);
 
 //Home

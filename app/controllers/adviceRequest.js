@@ -43,7 +43,54 @@ var AdviceRequest = require('../models/adviceRequest');
     }  
   };
 
+
+   // get the list of all advice requests of a specific doctor
+   const getAllAdviceRequestsByDoctor = async (req,res,next) =>{
+    try
+    {
+      let advices = await AdviceRequest.find({
+        idDoctor : req.params.id
+      }) ; 
+      if (advices != null && advices.length != 0) {
+        res.status(200).json(advices);
+
+      }
+      else {
+        res.status(404).json({message : "There is no advice requests for this doctor "});
+
+      }    }
+    catch(e)
+    {
+      res.status(500).json({ error: e.message  });
+    }  
+  };
+
+
+   // get the list of all advice requests of a specific doctor
+   const getAllAdviceRequestsByPatient = async (req,res,next) =>{
+    try
+    {
+      let advices = await AdviceRequest.find({
+        idPatient : req.params.id
+      }) ; 
+      if (advices != null && advices.length != 0) {
+        res.status(200).json(advices);
+
+      }
+      else {
+        res.status(404).json({message : "There is no advice requests for this patient "});
+
+      }
+    }
+    catch(e)
+    {
+      res.status(500).json({ error: e.message  });
+    }  
+  };
+
   module.exports =  {
     getAllAdviceRequests,
-    createAdviceRequest
+    createAdviceRequest,
+    getAllAdviceRequestsByPatient,
+    getAllAdviceRequestsByDoctor
   }
