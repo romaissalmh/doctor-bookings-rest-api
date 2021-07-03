@@ -1,6 +1,36 @@
 var Doctor = require('../models/doctor'); 
+var bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
+const loginDoctor = async(req, res, next) => {
+  const { phone, password } = req.body;
+
+  if (!phone || !password) {
+      res.status(400).send({ success: false, error: "Please provide your phone number and password" })
+  }
+  // check for doctor
+  else {
+      const doctor = await Doctor.findOne({ phone: phone  })
+
+      if (!doctor) {
+          res.status(401).send({ success: false, error: "Invalid credentials" })
+      } else {
+
+          const passwordCorrect = await bcrypt.compare(password, doctor.password);
+
+          if (!passwordCorrect) {
+              res.status(401).send({ success: false, error: "Invalid credentials" })
+
+          } else {
+             
+              const token = jwt.sign({ id: doctor._id, role: "doctor" }, process.env.JWT_SECRET);
+              res.send({ success: true, token: token, userId: doctor._id, role:"doctor"});
+      
+          }
+      }
+  }
+}
     // create a doctor in the database giving correct body
     const createDoctor = async (req,res,next) =>{
       
@@ -10,12 +40,13 @@ var Doctor = require('../models/doctor');
         })
         return;
       }
-
+      var salt = bcrypt.genSaltSync(10);
+      var hashPassword = bcrypt.hashSync(req.body.password, salt);
       const doctor = new Doctor({
         firstName: req.body.firstName,
         lastName : req.body.lastName,
         userName : req.body.userName,
-        password: req.body.password,
+        password: hashPassword,
         birthDate : req.body.birthDate,
         address: req.body.address,
         phone : req.body.phone,
@@ -132,4 +163,5 @@ var Doctor = require('../models/doctor');
       getAllDoctors,
       deleteDoctor,
       getDoctorsBySpeciality,
+      loginDoctor
     }
