@@ -73,6 +73,34 @@ var Booking = require('../models/booking');
       }  
     };
 
+      // get the list of bookings by doctor
+      const getBookingsByDoctor = async (req,res,next) =>{
+        try
+        {
+          let bookings = await Booking.find({
+            idDoctor : req.params.id
+          }) ; 
+          res.status(200).json(bookings);
+        }
+        catch(e)
+        {
+          res.status(500).json({ error: e.message  });
+        }  
+      };
+            // get the list of bookings by patient
+            const getBookingsByPatient = async (req,res,next) =>{
+              try
+              {
+                let bookings = await Booking.find({
+                  idPatient : req.params.id
+                }) ; 
+                res.status(200).json(bookings);
+              }
+              catch(e)
+              {
+                res.status(500).json({ error: e.message  });
+              }  
+            };
     
     // remove a booking from the db
     const deleteBooking = async (req,res,next) =>{
@@ -130,4 +158,6 @@ var Booking = require('../models/booking');
       getAllBookings,
       deleteBooking,
       updateBooking,
+      getBookingsByPatient,
+      getBookingsByDoctor
     }

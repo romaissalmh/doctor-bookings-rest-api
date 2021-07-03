@@ -232,8 +232,7 @@ const loginDoctor = async(req, res, next) => {
           if(availabilityEach.available == true)
            availableHours.push(availabilityEach.time);
         })
-      
-
+     
         res.status(200).json(availableHours);
       }
       catch(e)
