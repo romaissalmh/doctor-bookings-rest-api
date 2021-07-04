@@ -1,5 +1,15 @@
 var Booking = require('../models/booking'); 
+const fs = require('fs');
 
+var QRCode = require('qrcode');
+
+    const generateQR = async (req,res,next) => {
+      try {
+        await QRCode.toFile('../../public/images/samyimage.jpeg', req.body.text);
+      } catch (err) {
+        console.error(err)
+      }
+    }
     // create a booking in the database giving correct body
     const createBooking = async (req,res,next) =>{
       
@@ -18,11 +28,18 @@ var Booking = require('../models/booking');
       });
 
       try {
-  
-          await booking.save();
-          res.status(201).json({
-            message: "Booking added successfully !"
-          })
+          let d = await booking.save();
+          
+          // Converting the data into String format
+          let stringdata = JSON.stringify(d)
+    
+        
+          // Converting the data into base64
+          let QRcodeRes = await QRCode.toDataURL(stringdata)
+          console.log("if"+QRcodeRes)
+
+          res.status(201).json({QRCode : QRcodeRes})
+         
           
       }catch(e){
         res.status(500).json({ error: e.message  })     
@@ -159,5 +176,6 @@ var Booking = require('../models/booking');
       deleteBooking,
       updateBooking,
       getBookingsByPatient,
-      getBookingsByDoctor
+      getBookingsByDoctor,
+      generateQR
     }

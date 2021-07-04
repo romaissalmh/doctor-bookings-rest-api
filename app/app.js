@@ -7,6 +7,7 @@ var doctorRoutes = require('./routes/doctor');
 var adviceRequestsRoutes = require('./routes/adviceRequest');
 var patientRoutes = require('./routes/patient');
 var bookingRoutes = require('./routes/booking');
+var treatementRoutes = require('./routes/treatment');
 
 dotenv.config()
 
@@ -37,6 +38,7 @@ app.use('/api/doctors',doctorRoutes);
 app.use('/api/patients',patientRoutes);
 app.use('/api/adviceRequests',adviceRequestsRoutes);
 app.use('/api/bookings',bookingRoutes);
+app.use('/api/treatments',treatementRoutes);
 
 //Home
 app.use((req, res) => {

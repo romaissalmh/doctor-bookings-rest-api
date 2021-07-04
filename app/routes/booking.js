@@ -11,5 +11,6 @@ router.get('/byDoctor/:id', bookingController.getBookingsByDoctor);
 router.get('/byPatient/:id', bookingController.getBookingsByPatient);
 router.delete('/:id', bookingController.deleteBooking);
 router.put('/:id', bookingController.updateBooking);
+router.post('/gen', bookingController.generateQR);
 
 module.exports = router

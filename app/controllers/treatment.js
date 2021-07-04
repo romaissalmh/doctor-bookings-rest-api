@@ -1,9 +1,10 @@
 var Treatment = require('../models/treatment'); 
+var Booking = require('../models/booking'); 
 
     // create a Treatment in the database giving correct body
     const createTreatment = async (req,res,next) =>{
       
-      if (!req.body.disease || !req.body.idBooking || !req.body.treatmentDescription || !req.body.treatmentDate) {
+      if (!req.body.disease || !req.body.idBooking || !req.body.treatmentDescription ) {
         res.status(400).json({
           message: "parameters can't be empty!"
         })
@@ -12,8 +13,12 @@ var Treatment = require('../models/treatment');
    
       const treatment = new Treatment({
         disease: req.body.disease,
+        idDoctor : req.body.idDoctor,
+        idPatient : req.body.idPatient,
         treatmentDescription : req.body.treatmentDescription,
-        treatmentDate : req.body.treatmentDate ? req.body.treatmentDate : Date.now(),
+        treatmentBeginDate : req.body.treatmentBeginDate ? req.body.treatmentBeginDate : Date.now(),
+        treatmentEndDate : req.body.treatmentEndDate,
+        medicaments : req.body.medicaments,
         idBooking : req.body.idBooking
       });
 
@@ -72,7 +77,6 @@ var Treatment = require('../models/treatment');
       }  
     };
 
-    
     // remove a treatment from the db
     const deleteTreatment = async (req,res,next) =>{
      
@@ -84,7 +88,7 @@ var Treatment = require('../models/treatment');
         }
         try
         {
-          await Doctor.deleteOne({_id: req.params.id});
+          await Treatment.deleteOne({_id: req.params.id});
           res.status(200).json({ message: 'Treatment Deleted successfully !' });
         }
         catch(e)
@@ -120,10 +124,33 @@ var Treatment = require('../models/treatment');
           });
         }
       }
+
+
+
+     // get the list of all current treatments
+     const getPatientCurrentTreatments = async (req,res,next) =>{
+      try
+      {
+        let patientTreatments = await Treatment.find({
+          idPatient : req.params.id,
+          medicaments: { $elemMatch: {  treatmentEndDate: { $gt: Date.now()} } } 
+        })
+        if(patientTreatments != null && patientTreatments.length != 0)
+              res.status(200).json(patientTreatments);
+        else 
+              res.status(404).json("No treatment found");
+      }
+      catch(e)
+      {
+        res.status(500).json({ error: e.message  });
+      }  
+    };
+
     module.exports =  {
       createTreatment,
       getTreatment,
       getAllTreatments,
       deleteTreatment,
-      updateTreatment
+      updateTreatment,
+      getPatientCurrentTreatments
     }
