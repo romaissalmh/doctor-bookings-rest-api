@@ -8,7 +8,7 @@ router.post('/', doctorController.createDoctor);
 router.get('/getDoctor/:id', doctorController.getDoctor);
 router.get('/', doctorController.getAllDoctors);
 router.delete('/:id', doctorController.deleteDoctor);
-router.get('/bySpeciality/:id', doctorController.getDoctorsBySpeciality);
+router.get('/bySpeciality/:speciality', doctorController.getDoctorsBySpeciality);
 router.post('/login', doctorController.loginDoctor);
 router.put('/:id', doctorController.updateDoctor);
 router.get('/getAvailability', doctorController.getAvailabilityByDoctor);
