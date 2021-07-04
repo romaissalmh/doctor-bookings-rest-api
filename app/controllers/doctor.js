@@ -125,7 +125,7 @@ const loginDoctor = async(req, res, next) => {
       try
       {
         let doctors = await Doctor.find({
-          speciality : req.body.speciality
+          speciality : req.params.speciality
         }) ; 
         if (doctors != null && doctors.length != 0) {
           res.status(200).json(doctors);
