@@ -133,8 +133,6 @@ const loginDoctor = async(req, res, next) => {
             doctorsList.push({
               firstName: doctor.firstName,
               lastName:doctor.lastName,
-              userName: doctor.userName,
-              password: doctor.password,
               birthDate: doctor.birthDate,
               address: doctor.address,
               phone: doctor.phone,
