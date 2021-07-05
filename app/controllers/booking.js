@@ -97,7 +97,7 @@ var QRCode = require('qrcode');
           let bookings = await Booking.find({
             idDoctor : req.params.id
           },
-          { bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1,createDate:0,__v:0,_id: 0,}
+          { bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1}
           ) ; 
           res.status(200).json(bookings);
         }
@@ -113,7 +113,7 @@ var QRCode = require('qrcode');
                 let bookings = await Booking.find({
                   idPatient : req.params.id
                 },
-                {  bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1,createDate:0,__v:0,_id: 0,}) ; 
+                {  bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1}) ; 
                 res.status(200).json(bookings);
               }
               catch(e)
