@@ -131,6 +131,7 @@ const loginDoctor = async(req, res, next) => {
           let doctorsList = [];
           doctors.forEach((doctor) => {
             doctorsList.push({
+              id:doctor._id,
               firstName: doctor.firstName,
               lastName:doctor.lastName,
               birthDate: doctor.birthDate,
