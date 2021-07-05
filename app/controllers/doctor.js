@@ -128,11 +128,30 @@ const loginDoctor = async(req, res, next) => {
           speciality : req.params.speciality
         }) ; 
         if (doctors != null && doctors.length != 0) {
-          res.status(200).json(doctors);
+          let doctorsList = [];
+          doctors.forEach((doctor) => {
+            doctorsList.push({
+              firstName: doctor.firstName,
+              lastName:doctor.lastName,
+              userName: doctor.userName,
+              password: doctor.password,
+              birthDate: doctor.birthDate,
+              address: doctor.address,
+              phone: doctor.phone,
+              gender: doctor.gender,
+              email:doctor.email,
+              speciality: doctor.speciality,
+              latitude: doctor.latitude,
+              longitude: doctor.longitude,
+              facebookPage: doctor.facebookPage,
+              pictureUrl: doctor.pictureUrl,
+            })
+          });
+          res.status(200).json(doctorsList)
 
         }
         else {
-          res.status(404).json({ message: "There is no doctor found with speciality:"+ req.body.speciality });
+          res.status(404).json({ message: "There is no doctor found with speciality:"+ req.params.speciality });
           return ;
         }
       }
