@@ -1,11 +1,27 @@
 var Booking = require('../models/booking'); 
+var Patient = require('../models/patient'); 
+const PushNotifications = require('@pusher/push-notifications-server');
+
 const fs = require('fs');
 
 var QRCode = require('qrcode');
 
-    const generateQR = async (req,res,next) => {
+    const notify = async (req,res,next) => {
       try {
-        await QRCode.toFile('../../public/images/samyimage.jpeg', req.body.text);
+        let pushNotifications = new PushNotifications({
+          instanceId: process.env.instanceId,
+          secretKey: process.env.secretKey
+        });
+    
+        let publishResponse = await pushNotifications.publishToInterests(['hello'], {
+            fcm: {
+              notification: {
+                title: 'Bonjour Dr',
+                body: 'Vous avez un nouveau rendez-vous!',
+              },
+            },
+          })
+         console.log('Just published:', publishResponse.publishId);
       } catch (err) {
         console.error(err)
       }
@@ -27,17 +43,54 @@ var QRCode = require('qrcode');
         idPatient : req.body.idPatient,
       });
 
+      
+     
       try {
-          let d = await booking.save();
-          
-          // Converting the data into String format
-          let stringdata = JSON.stringify(d)
-    
         
+          let d = await booking.save();
+          let patient = await Patient.findOne({
+            _id : d.idPatient
+          })
+          let result = {
+                _id : d._id,
+                bookingDate : d.bookingDate,
+                bookingTime : d.bookingTime,
+                idDoctor : d.idDoctor,
+                idPatient : d.idPatient,
+                address : patient.address,
+                birthDate : patient.birthDate,
+                firstNamePatient : patient.firstName,
+                lastNamePatient:patient.lastName,
+                phonePatient: patient.phone,
+                genderPatient : patient.gender,
+                email: patient.email,
+                weightPatient: patient.weight,
+                heightPatient: patient.height,
+                bloodTypePatient: patient.bloodType,
+                personalDiseasePatient: patient.personalDisease,
+                
+          }
+          // Converting the data into String format
+          let stringdata = JSON.stringify(result)
+    
+          await QRCode.toFile('../samyimage.jpeg',stringdata);
+
           // Converting the data into base64
           let QRcodeRes = await QRCode.toDataURL(stringdata)
-          console.log("if"+QRcodeRes)
-
+          let pushNotifications = new PushNotifications({
+            instanceId: process.env.instanceId,
+            secretKey: process.env.secretKey
+          });
+      
+          let publishResponse = await pushNotifications.publishToInterests(['hello'], {
+              fcm: {
+                notification: {
+                  title: 'Bonjour Dr',
+                  body: 'Vous avez un nouveau rendez-vous!',
+                },
+              },
+            })
+           console.log('Just published:', publishResponse.publishId);
           res.status(201).json({QRCode : QRcodeRes})
          
           
@@ -180,5 +233,5 @@ var QRCode = require('qrcode');
       updateBooking,
       getBookingsByPatient,
       getBookingsByDoctor,
-      generateQR
+      notify
     }
