@@ -22,8 +22,13 @@ var QRCode = require('qrcode');
             },
           })
          console.log('Just published:', publishResponse.publishId);
+         res.status(200).json(publishResponse);
+
+
       } catch (err) {
         console.error(err)
+        res.status(500).json(err);
+
       }
     }
     // create a booking in the database giving correct body
