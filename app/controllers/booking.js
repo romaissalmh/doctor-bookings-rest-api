@@ -2,6 +2,15 @@ var Booking = require('../models/booking');
 var Patient = require('../models/patient'); 
 const PushNotifications = require('@pusher/push-notifications-server');
 
+/*
+curl -H "Content-Type: application/json" \
+     -H "Authorization: Bearer B7D2A225BF8F47F0EEC5CB649D7B03C3A027E96798E31B44CD1BF540C1EBA350" \
+     -X POST "https://15d051a2-862d-46d0-b3b6-68f3f8004b70.pushnotifications.pusher.com/publish_api/v1/instances/15d051a2-862d-46d0-b3b6-68f3f8004b70/publishes" \
+     -d '{"interests":["hello"],"fcm":{"notification":{"title":"Hello", "body":"Hello, world!"}}}'
+
+*/
+
+
 const fs = require('fs');
 
 var QRCode = require('qrcode');
@@ -78,7 +87,7 @@ var QRCode = require('qrcode');
           // Converting the data into String format
           let stringdata = JSON.stringify(result)
     
-          await QRCode.toFile('../samyimage.jpeg',stringdata);
+         // await QRCode.toFile('../samyimage.jpeg',stringdata);
 
           // Converting the data into base64
           let QRcodeRes = await QRCode.toDataURL(stringdata)
