@@ -1,5 +1,6 @@
 var Treatment = require('../models/treatment'); 
 var Booking = require('../models/booking'); 
+var Doctor = require('../models/doctor'); 
 
     // create a Treatment in the database giving correct body
     const createTreatment = async (req,res,next) =>{
@@ -136,7 +137,29 @@ var Booking = require('../models/booking');
           medicaments: { $elemMatch: {  treatmentEndDate: { $gt: Date.now()} } } 
         })
         if(patientTreatments != null && patientTreatments.length != 0)
-              res.status(200).json(patientTreatments);
+              {
+                let finalList = []
+                for (const patientTreatment of patientTreatments) {
+                    let doctor = await Doctor.findOne({ 
+                      _id : patientTreatment.idDoctor
+                     })
+                      finalList.push({
+                        disease: patientTreatment.disease ,
+                        treatmentDescription: patientTreatment.treatmentDescription,
+                        treatmentBeginDate: patientTreatment.treatmentBeginDate,
+                        idBooking: patientTreatment.idBooking,
+                        idPatient :patientTreatment.idPatient,
+                        idDoctor:patientTreatment.idDoctor,
+                        nomDoctor : doctor.lastName,
+                        prenomDoctor : doctor.firstName,
+                        speciality : doctor.speciality,
+                        medicaments:patientTreatment.medicaments
+                      })
+                    }
+                  res.status(200).json(finalList);
+
+                }
+               
         else 
               res.status(404).json("No treatment found");
       }
