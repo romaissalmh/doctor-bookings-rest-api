@@ -1,4 +1,6 @@
 var Booking = require('../models/booking'); 
+var Doctor = require('../models/doctor'); 
+
 var Patient = require('../models/patient'); 
 const PushNotifications = require('@pusher/push-notifications-server');
 
@@ -56,6 +58,7 @@ var QRCode = require('qrcode');
         idDoctor : req.body.idDoctor,
         idPatient : req.body.idPatient,
         state : "attente",
+        QRCode: "",
       });
 
       
@@ -92,6 +95,8 @@ var QRCode = require('qrcode');
 
           // Converting the data into base64
           let QRcodeRes = await QRCode.toDataURL(stringdata)
+          //add qr code to the db
+          await d.updateOne({QRCode : QRcodeRes })
           let pushNotifications = new PushNotifications({
             instanceId: process.env.instanceId,
             secretKey: process.env.secretKey
@@ -175,22 +180,47 @@ var QRCode = require('qrcode');
           res.status(500).json({ error: e.message  });
         }  
       };
-            // get the list of bookings by patient
-            const getBookingsByPatient = async (req,res,next) =>{
-              try
-              {
-                let bookings = await Booking.find({
-                  idPatient : req.params.id,
-                  state : "attente",
-                },
-                {  bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1}) ; 
-                res.status(200).json(bookings);
-              }
-              catch(e)
-              {
-                res.status(500).json({ error: e.message  });
-              }  
-            };
+       // get the list of bookings by patient
+       const getBookingsByPatient = async (req,res,next) =>{
+        try
+        {
+          let bookings = await Booking.find({
+            idPatient : req.params.id,
+            state : "attente",
+          },
+          {  bookingDate: 1, bookingTime: 1,idPatient:1,idDoctor:1,QRCode :1}) ; 
+          
+          if(bookings != null && bookings.length != 0)
+          {
+            let finalList = []
+            for (const patientBooking of bookings) {
+                let doctor = await Doctor.findOne({ 
+                  _id : patientBooking.idDoctor
+                 })
+                  finalList.push({
+                    bookingDate: patientBooking.bookingDate ,
+                    bookingTime: patientBooking.bookingTime,
+                    QRCode: patientBooking.QRCode,
+                    idPatient :patientBooking.idPatient,
+                    idDoctor:patientBooking.idDoctor,
+                    nomDoctor : doctor.lastName,
+                    prenomDoctor : doctor.firstName,
+                    speciality : doctor.speciality,
+                  })
+                }
+              res.status(200).json(finalList);
+
+            }
+           
+          else 
+                res.status(404).json("No booking found");
+                    
+        }
+        catch(e)
+        {
+          res.status(500).json({ error: e.message  });
+        }  
+      }; 
     
     // remove a booking from the db
     const deleteBooking = async (req,res,next) =>{

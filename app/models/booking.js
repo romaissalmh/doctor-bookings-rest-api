@@ -13,6 +13,7 @@ const bookingSchema = mongoose.Schema({
   },
   idDoctor: {type: Schema.Types.ObjectId, ref: 'Doctor'},
   idPatient: {type: Schema.Types.ObjectId, ref: 'Patient'},
+  QRCode : {type: String},
 
 
 });
