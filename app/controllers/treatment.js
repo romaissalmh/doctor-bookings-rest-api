@@ -1,6 +1,7 @@
 var Treatment = require('../models/treatment'); 
 var Booking = require('../models/booking'); 
 var Doctor = require('../models/doctor'); 
+var Patient = require('../models/patient'); 
 
     // create a Treatment in the database giving correct body
     const createTreatment = async (req,res,next) =>{
@@ -24,6 +25,11 @@ var Doctor = require('../models/doctor');
       });
 
       try {
+          let booking = Booking.findOne({
+            _id : req.body.idBooking
+          })
+          if(booking != null)
+            booking.state = "termine"
           await treatment.save();
           res.status(201).json({
             message: "Treatment added successfully !"
@@ -169,11 +175,52 @@ var Doctor = require('../models/doctor');
       }  
     };
 
+
+      // get the list of all current treatments
+      const getDoctorTreatments = async (req,res,next) =>{
+        try
+        {
+          let patientTreatments = await Treatment.find({
+            idDoctor : req.params.id,
+          })
+          if(patientTreatments != null && patientTreatments.length != 0)
+                {
+                  let finalList = []
+                  for (const patientTreatment of patientTreatments) {
+                      let patient = await Patient.findOne({ 
+                        _id : patientTreatment.idPatient
+                       })
+                        finalList.push({
+                          disease: patientTreatment.disease ,
+                          treatmentDescription: patientTreatment.treatmentDescription,
+                          treatmentBeginDate: patientTreatment.treatmentBeginDate,
+                          idBooking: patientTreatment.idBooking,
+                          idPatient :patientTreatment.idPatient,
+                          idDoctor:patientTreatment.idDoctor,
+                          nomPatient : patient.lastName,
+                          prenomPatient : patient.firstName,
+                          medicaments:patientTreatment.medicaments
+                        })
+                      }
+                    res.status(200).json(finalList);
+  
+                  }
+                 
+          else 
+                res.status(404).json("No treatment found");
+        }
+        catch(e)
+        {
+          res.status(500).json({ error: e.message  });
+        }  
+      };
+
     module.exports =  {
       createTreatment,
       getTreatment,
       getAllTreatments,
       deleteTreatment,
       updateTreatment,
-      getPatientCurrentTreatments
+      getPatientCurrentTreatments,
+      getDoctorTreatments
     }

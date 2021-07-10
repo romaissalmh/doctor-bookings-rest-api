@@ -10,6 +10,7 @@ router.get('/', treatmentController.getAllTreatments);
 router.delete('/:id', treatmentController.deleteTreatment);
 router.put('/:id', treatmentController.updateTreatment);
 router.get('/getPatientCurrentTreatments/:id', treatmentController.getPatientCurrentTreatments);
+router.get('/getDoctorTreatments/:id', treatmentController.getDoctorTreatments);
 
 
 module.exports = router

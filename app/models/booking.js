@@ -6,6 +6,7 @@ const bookingSchema = mongoose.Schema({
   
   bookingDate: { type: String, required: true },
   bookingTime: { type: String, required: true },
+  state : {type:String},
   createDate: {
     type: Date,
     default: Date.now,
