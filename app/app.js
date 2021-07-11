@@ -8,7 +8,6 @@ var adviceRequestsRoutes = require('./routes/adviceRequest');
 var patientRoutes = require('./routes/patient');
 var bookingRoutes = require('./routes/booking');
 var treatementRoutes = require('./routes/treatment');
-
 dotenv.config()
 
 
@@ -27,6 +26,7 @@ mongoose.connect(process.env.DEV_DATABASE_URL,
 	  useUnifiedTopology: true })
 	.then(() => console.log('Successful connection to MongoDB !'))
 	.catch(() => console.log('Connection to MongoDB failed !'));
+
 
 
 app.use(express.static('public/images'));

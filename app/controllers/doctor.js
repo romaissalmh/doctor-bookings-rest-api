@@ -220,17 +220,27 @@ const loginDoctor = async(req, res, next) => {
           bookingDate : req.body.date
 
         })
+        console.log(doctor)
+        console.log(bookings)
         const durationOfOneAppointement = 60 / doctor.workSchedule.nbBookingPerHour ; //in minutes
 
         const allocatedDates = [];
-        bookings.forEach((bookingsEach) => {
+        if(bookings != null && bookings.length != 0){
+          bookings.forEach((bookingsEach) => {
             allocatedDates.push({from: bookingsEach.bookingDate+"T"+bookingsEach.bookingTime, duration: durationOfOneAppointement})
         })
+        }
+      
         const scheduler = new Scheduler();
-         
+     
+        let dateF = new Date(req.body.date);
+        let dateT = new Date(req.body.date);
+
+        dateT.setDate(dateF.getDate() + 1);
+
         const availability = scheduler.getAvailability({
-          from: '2021-07-05',
-          to: '2021-07-06',
+          from: dateF,
+          to: dateT,
           timezone: 'EST',
           duration: durationOfOneAppointement,
           interval: durationOfOneAppointement,
@@ -240,18 +250,24 @@ const loginDoctor = async(req, res, next) => {
               to: doctor.workSchedule.closingTime,
               unavailability: [{ from: doctor.workSchedule.lunchBreakStart, to: doctor.workSchedule.lunchBreakEnd,}]
             },
-          //  unavailability: [{ from: '2017-02-20T00:00', to: '2017-02-27T00:00' }], //vacation
             allocated:allocatedDates
             
           }
         })
         const availableHours = [];
-        availability[req.body.date].forEach((availabilityEach)=>{
-          if(availabilityEach.available == true)
-           availableHours.push(availabilityEach.time);
-        })
-     
-        res.status(200).json(availableHours);
+        if(availableHours != null && availableHours.length != 0){
+          availability[req.body.date].forEach((availabilityEach)=>{
+            if(availabilityEach.available == true)
+             availableHours.push(availabilityEach.time);
+          })
+       
+          res.status(200).json(availableHours);
+        }
+        else {
+          res.status(404).json({ error: 'The doctor is not available' });
+
+        }
+      
       }
       catch(e)
       {

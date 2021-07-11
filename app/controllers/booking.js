@@ -1,47 +1,14 @@
 var Booking = require('../models/booking'); 
 var Doctor = require('../models/doctor'); 
-
 var Patient = require('../models/patient'); 
 const PushNotifications = require('@pusher/push-notifications-server');
-
-/*
-curl -H "Content-Type: application/json" \
-     -H "Authorization: Bearer B7D2A225BF8F47F0EEC5CB649D7B03C3A027E96798E31B44CD1BF540C1EBA350" \
-     -X POST "https://15d051a2-862d-46d0-b3b6-68f3f8004b70.pushnotifications.pusher.com/publish_api/v1/instances/15d051a2-862d-46d0-b3b6-68f3f8004b70/publishes" \
-     -d '{"interests":["hello"],"fcm":{"notification":{"title":"Hello", "body":"Hello, world!"}}}'
-
-*/
 
 
 const fs = require('fs');
 
 var QRCode = require('qrcode');
 
-    const notify = async (req,res,next) => {
-      try {
-        let pushNotifications = new PushNotifications({
-          instanceId: process.env.instanceId,
-          secretKey: process.env.secretKey
-        });
     
-        let publishResponse = await pushNotifications.publishToInterests(['hello'], {
-            fcm: {
-              notification: {
-                title: 'Bonjour Dr',
-                body: 'Vous avez un nouveau rendez-vous!',
-              },
-            },
-          })
-         console.log('Just published:', publishResponse.publishId);
-         res.status(200).json(publishResponse);
-
-
-      } catch (err) {
-        console.error(err)
-        res.status(500).json(err);
-
-      }
-    }
     // create a booking in the database giving correct body
     const createBooking = async (req,res,next) =>{
       
@@ -280,5 +247,4 @@ var QRCode = require('qrcode');
       updateBooking,
       getBookingsByPatient,
       getBookingsByDoctor,
-      notify
     }
