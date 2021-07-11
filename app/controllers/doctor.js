@@ -220,8 +220,7 @@ const loginDoctor = async(req, res, next) => {
           bookingDate : req.body.date
 
         })
-        console.log(doctor)
-        console.log(bookings)
+      
         const durationOfOneAppointement = 60 / doctor.workSchedule.nbBookingPerHour ; //in minutes
 
         const allocatedDates = [];
@@ -255,7 +254,8 @@ const loginDoctor = async(req, res, next) => {
           }
         })
         const availableHours = [];
-        if(availableHours != null && availableHours.length != 0){
+         console.log(availability)
+        if(availableHours != null ){
           availability[req.body.date].forEach((availabilityEach)=>{
             if(availabilityEach.available == true)
              availableHours.push(availabilityEach.time);
