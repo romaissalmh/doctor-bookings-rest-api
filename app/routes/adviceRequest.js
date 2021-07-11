@@ -5,10 +5,10 @@ var {verifyTokenPatient, verifyTokenDoctor} = require('./verifyToken')
 
 var router= express.Router(); 
 
-router.post('/',/*verifyTokenPatient,*/adviceReqController.createAdviceRequest);
+router.post('/',verifyTokenPatient,adviceReqController.createAdviceRequest);
 router.get('/', adviceReqController.getAllAdviceRequests);
 router.get('/byDoctor/:id',verifyTokenDoctor, adviceReqController.getAllAdviceRequestsByDoctor);
-router.get('/byPatient/:id',/*verifyTokenPatient,*/ adviceReqController.getAllAdviceRequestsByPatient);
+router.get('/byPatient/:id',verifyTokenPatient, adviceReqController.getAllAdviceRequestsByPatient);
 
 
 module.exports = router
